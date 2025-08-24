@@ -1,11 +1,14 @@
 {
   "name": "@thinkeloquent/xast-append-ids",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "XAST plugin to append deterministic IDs to XML elements",
   "type": "module",
   "main": "index.mjs",
   "exports": {
     ".": "./index.mjs"
+  },
+  "bin": {
+    "xast-append-ids": "./cli.mjs"
   },
   "scripts": {
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
@@ -21,9 +24,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@thinkeloquent/id-generator": "^0.0.4",
+    "@thinkeloquent/id-generator": "^1.0.0",
     "xast-util-select": "^0.4.0",
-    "unist-util-visit": "^4.0.0"
+    "unist-util-visit": "^4.0.0",
+    "commander": "^11.0.0",
+    "glob": "^11.0.0",
+    "unified": "^10.0.0",
+    "xast-util-from-xml": "^3.0.0",
+    "xast-util-to-xml": "^3.0.0"
   },
   "peerDependencies": {
     "unified": "^10.0.0"

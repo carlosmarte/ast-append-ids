@@ -1,11 +1,14 @@
 {
   "name": "@thinkeloquent/rehype-append-ids",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Rehype plugin to append deterministic IDs to HTML elements",
   "type": "module",
   "main": "index.mjs",
   "exports": {
     ".": "./index.mjs"
+  },
+  "bin": {
+    "rehype-append-ids": "./cli.mjs"
   },
   "scripts": {
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
@@ -22,9 +25,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@thinkeloquent/id-generator": "^0.0.4",
+    "@thinkeloquent/id-generator": "^1.0.0",
     "hast-util-select": "^5.0.0",
-    "unist-util-visit": "^4.0.0"
+    "unist-util-visit": "^4.0.0",
+    "commander": "^11.0.0",
+    "glob": "^11.0.0",
+    "unified": "^10.0.0",
+    "rehype-parse": "^8.0.0",
+    "rehype-stringify": "^9.0.0"
   },
   "peerDependencies": {
     "unified": "^10.0.0"

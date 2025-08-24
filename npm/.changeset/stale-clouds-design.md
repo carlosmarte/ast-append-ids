@@ -5,4 +5,4 @@
 "@thinkeloquent/id-generator": major
 ---
 
-first changeset release
+add npx support

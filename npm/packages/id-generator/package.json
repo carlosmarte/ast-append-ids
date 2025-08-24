@@ -1,11 +1,14 @@
 {
   "name": "@thinkeloquent/id-generator",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Deterministic ID generation utilities for AST nodes",
   "type": "module",
   "main": "index.mjs",
   "exports": {
     ".": "./index.mjs"
+  },
+  "bin": {
+    "id-generator": "./cli.mjs"
   },
   "scripts": {
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
@@ -22,7 +25,9 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^11.0.0"
+  },
   "devDependencies": {
     "jest": "^29.0.0"
   },
