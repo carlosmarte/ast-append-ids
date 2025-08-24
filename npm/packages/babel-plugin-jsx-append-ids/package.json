@@ -1,0 +1,31 @@
+{
+  "name": "@thinkeloquent/babel-plugin-jsx-append-ids",
+  "version": "0.0.4",
+  "description": "Babel plugin to append deterministic IDs to JSX elements",
+  "type": "module",
+  "main": "index.mjs",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "npmPublish": "npm publish --access public"
+  },
+  "keywords": [
+    "babel",
+    "babel-plugin",
+    "jsx",
+    "react",
+    "id",
+    "attribute"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@thinkeloquent/id-generator": "^0.0.4",
+    "@babel/core": "^7.0.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0"
+  }
+}

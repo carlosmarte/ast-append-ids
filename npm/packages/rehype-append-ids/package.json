@@ -1,0 +1,32 @@
+{
+  "name": "@thinkeloquent/rehype-append-ids",
+  "version": "0.0.4",
+  "description": "Rehype plugin to append deterministic IDs to HTML elements",
+  "type": "module",
+  "main": "index.mjs",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "npmPublish": "npm publish --access public"
+  },
+  "keywords": [
+    "rehype",
+    "rehype-plugin",
+    "html",
+    "hast",
+    "id",
+    "attribute"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@thinkeloquent/id-generator": "^0.0.4",
+    "hast-util-select": "^5.0.0",
+    "unist-util-visit": "^4.0.0"
+  },
+  "peerDependencies": {
+    "unified": "^10.0.0"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@thinkeloquent/ast-append-ids",
+  "version": "1.0.0",
+  "description": "Monorepo for deterministically appending unique IDs to AST elements",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
+    "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
+    "test:unit": "NODE_OPTIONS='--experimental-vm-modules' jest --testNamePattern='\\.unit\\.mjs$'",
+    "test:spec": "NODE_OPTIONS='--experimental-vm-modules' jest --testNamePattern='\\.spec\\.mjs$'",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "keywords": [
+    "ast",
+    "id",
+    "rehype",
+    "xast",
+    "babel",
+    "jsx",
+    "html",
+    "xml"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ast-append-ids.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@changesets/cli": "^2.29.6",
+    "@jest/globals": "^29.0.0",
+    "babel-jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "rehype-parse": "^8.0.0",
+    "rehype-stringify": "^9.0.0",
+    "unified": "^10.0.0",
+    "xast-util-from-xml": "^3.0.0",
+    "xast-util-to-xml": "^3.0.0"
+  },
+  "dependencies": {
+    "glob": "^11.0.3"
+  }
+}

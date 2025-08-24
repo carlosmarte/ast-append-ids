@@ -1,0 +1,34 @@
+{
+  "name": "@thinkeloquent/id-generator",
+  "version": "0.0.4",
+  "description": "Deterministic ID generation utilities for AST nodes",
+  "type": "module",
+  "main": "index.mjs",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "npmPublish": "npm publish --access public"
+  },
+  "keywords": [
+    "id",
+    "generator",
+    "ast",
+    "deterministic",
+    "hash",
+    "slug",
+    "path"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ast-append-ids.git",
+    "directory": "packages/id-generator"
+  }
+}
