@@ -1,0 +1,70 @@
+[package]
+name = "ast-append-ids"
+version = "0.1.0"
+edition = "2021"
+authors = ["ThinkEloquent"]
+description = "Unified AST ID appender for JSX, XML, and HTML - Rust/WASM implementation"
+license = "MIT"
+repository = "https://github.com/thinkeloquent/ast-append-ids"
+keywords = ["ast", "jsx", "xml", "html", "id", "wasm"]
+categories = ["development-tools", "web-programming", "wasm"]
+
+[lib]
+name = "ast_append_ids"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "ast-append-ids"
+path = "src/cli.rs"
+
+[dependencies]
+# Core dependencies
+sha2 = "0.10"
+regex = "1.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# AST parsing
+swc_core = { version = "0.87", features = ["ecma_parser", "ecma_visit", "ecma_ast", "common"] }
+swc_ecma_parser = "0.143"
+swc_ecma_ast = "0.112"
+swc_ecma_visit = "0.98"
+quick-xml = "0.31"
+scraper = "0.18"
+selectors = "0.25"
+
+# CLI dependencies
+clap = { version = "4.4", features = ["derive"] }
+glob = "0.3"
+anyhow = "1.0"
+colored = "2.1"
+
+# WASM dependencies
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = "0.3"
+getrandom = { version = "0.2", features = ["js"] }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+criterion = "0.5"
+pretty_assertions = "1.4"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1"
+wee_alloc = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+
+[profile.wasm]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+panic = "abort"
+
+[package.metadata.wasm-pack]
+"wasm-opt" = ["-Oz", "--enable-simd"]

@@ -1,0 +1,50 @@
+{
+  "name": "@thinkeloquent/ast-append-ids-wasm",
+  "version": "0.1.0",
+  "description": "Unified AST ID appender for JSX, XML, and HTML - WASM implementation",
+  "main": "index.js",
+  "module": "index.mjs",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.mjs",
+    "index.d.ts",
+    "pkg-node/**/*",
+    "pkg-web/**/*",
+    "pkg-bundler/**/*"
+  ],
+  "scripts": {
+    "build": "./build.sh",
+    "build:wasm": "wasm-pack build --target nodejs --out-dir pkg-node --release",
+    "build:wasm:web": "wasm-pack build --target web --out-dir pkg-web --release",
+    "build:wasm:bundler": "wasm-pack build --target bundler --out-dir pkg-bundler --release",
+    "test": "cargo test && wasm-pack test --node",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ast",
+    "jsx",
+    "xml",
+    "html",
+    "id",
+    "wasm",
+    "babel",
+    "rehype",
+    "xast"
+  ],
+  "author": "ThinkEloquent",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thinkeloquent/ast-append-ids"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
