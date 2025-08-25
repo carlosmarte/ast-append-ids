@@ -1,6 +1,7 @@
 # AST Append IDs - Rust/WASM Implementation
 
 A unified Rust implementation that combines the functionality of three npm packages:
+
 - `babel-plugin-jsx-append-ids` - JSX/React element ID appending
 - `xast-append-ids` - XML element ID appending
 - `rehype-append-ids` - HTML element ID appending
@@ -51,30 +52,30 @@ ast-append-ids auto src/**/* --verbose
 ### JavaScript/TypeScript Usage
 
 ```javascript
-import { AstAppendIds } from '@thinkeloquent/ast-append-ids-wasm';
+import { AstAppendIds } from "@thinkeloquent/ast-append-ids-wasm";
 
 const processor = new AstAppendIds();
 
 // Process JSX
 const jsxResult = await processor.processJsx(jsxContent, {
-  attr: 'data-ast-id',
-  strategy: 'hash',
-  prefix: 'el-',
-  include: ['div', 'span'],
-  exclude: ['script']
+  attr: "data-ast-id",
+  strategy: "hash",
+  prefix: "el-",
+  include: ["div", "span"],
+  exclude: ["script"],
 });
 
 // Process HTML
 const htmlResult = await processor.processHtml(htmlContent, {
-  selector: '*:not([id])',
-  strategy: 'slug',
-  overwrite: false
+  selector: "*:not([id])",
+  strategy: "slug",
+  overwrite: false,
 });
 
 // Process XML
 const xmlResult = await processor.processXml(xmlContent, {
-  strategy: 'path',
-  prefix: 'node-'
+  strategy: "path",
+  prefix: "node-",
 });
 
 // Auto-detect content type
@@ -87,43 +88,46 @@ The WASM module provides drop-in replacements for the original npm packages:
 
 ```javascript
 // Babel plugin
-import { babelPluginJsxAppendIds } from '@thinkeloquent/ast-append-ids-wasm';
+import { babelPluginJsxAppendIds } from "@thinkeloquent/ast-append-ids-wasm";
 
 // .babelrc.js
 module.exports = {
   plugins: [
-    [babelPluginJsxAppendIds, {
-      attr: 'data-ast-id',
-      strategy: 'hash'
-    }]
-  ]
+    [
+      babelPluginJsxAppendIds,
+      {
+        attr: "data-ast-id",
+        strategy: "hash",
+      },
+    ],
+  ],
 };
 
 // Rehype plugin
-import { rehypeAppendIds } from '@thinkeloquent/ast-append-ids-wasm';
+import { rehypeAppendIds } from "@thinkeloquent/ast-append-ids-wasm";
 
 // Unified pipeline
 unified()
   .use(rehypeParse)
-  .use(rehypeAppendIds, { strategy: 'slug' })
+  .use(rehypeAppendIds, { strategy: "slug" })
   .use(rehypeStringify)
   .process(html);
 
 // XAST plugin
-import { xastAppendIds } from '@thinkeloquent/ast-append-ids-wasm';
+import { xastAppendIds } from "@thinkeloquent/ast-append-ids-wasm";
 ```
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `attr` | string | `'data-ast-id'` | Attribute name for the ID |
-| `strategy` | `'hash'` \| `'slug'` \| `'path'` | `'hash'` | ID generation strategy |
-| `prefix` | string | `'el-'` | Prefix for generated IDs |
-| `overwrite` | boolean | `false` | Overwrite existing IDs |
-| `selector` | string | - | CSS selector (HTML/XML only) |
-| `include` | string[] | `[]` | Tags to include (JSX only) |
-| `exclude` | string[] | `[]` | Tags to exclude (JSX only) |
+| Option      | Type                             | Default         | Description                  |
+| ----------- | -------------------------------- | --------------- | ---------------------------- |
+| `attr`      | string                           | `'data-ast-id'` | Attribute name for the ID    |
+| `strategy`  | `'hash'` \| `'slug'` \| `'path'` | `'hash'`        | ID generation strategy       |
+| `prefix`    | string                           | `'el-'`         | Prefix for generated IDs     |
+| `overwrite` | boolean                          | `false`         | Overwrite existing IDs       |
+| `selector`  | string                           | -               | CSS selector (HTML/XML only) |
+| `include`   | string[]                         | `[]`            | Tags to include (JSX only)   |
+| `exclude`   | string[]                         | `[]`            | Tags to exclude (JSX only)   |
 
 ## Building from Source
 
@@ -144,6 +148,9 @@ cd ast-append-ids/cargo/ast-append-ids
 ./build.sh
 
 # Or build individually:
+
+# install
+cargo install --path
 
 # Build native CLI
 cargo build --release
