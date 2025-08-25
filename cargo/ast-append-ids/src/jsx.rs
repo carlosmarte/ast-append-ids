@@ -1,11 +1,10 @@
 use crate::ast_common::{self, AstNode};
-use crate::id_generator::{IdGenerator, TextExtractable};
+use crate::id_generator::IdGenerator;
 use crate::{AstProcessor, IdOptions};
-use swc_core::common::{FileName, SourceMap, Span, DUMMY_SP};
+use swc_core::common::{FileName, SourceMap, DUMMY_SP};
 use swc_core::ecma::ast::*;
 use swc_core::ecma::parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use swc_core::ecma::visit::{VisitMut, VisitMutWith};
-use swc_ecma_parser::EsConfig;
 use std::sync::Arc;
 
 pub struct JsxProcessor {
@@ -37,6 +36,7 @@ impl JsxProcessor {
         member.sym.to_string()
     }
 
+    #[allow(dead_code)]
     fn extract_text_from_jsx_children(children: &[JSXElementChild]) -> String {
         let mut text_parts = Vec::new();
         
@@ -198,7 +198,7 @@ impl AstProcessor for JsxProcessor {
         module.visit_mut_with(&mut visitor);
 
         // Convert back to string
-        let output = swc_core::ecma::codegen::to_code(&module);
+        let output = to_code(&module);
         
         Ok(output)
     }

@@ -1,0 +1,62 @@
+{
+  "name": "@thinkeloquent/ast-append-ids",
+  "version": "1.0.0",
+  "description": "Unified AST ID appender for JSX, XML, and HTML with WASM implementation",
+  "type": "module",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "browser": "./pkg-web/ast_append_ids.js",
+      "node": {
+        "import": "./index.mjs",
+        "require": "./index.cjs"
+      },
+      "default": "./index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "ast-append-ids": "./cli.mjs"
+  },
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "npmPublish": "npm publish --access public"
+  },
+  "keywords": [
+    "ast",
+    "jsx",
+    "xml",
+    "html",
+    "id",
+    "wasm",
+    "babel",
+    "rehype",
+    "xast"
+  ],
+  "author": "ThinkEloquent",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thinkeloquent/ast-append-ids"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "glob": "^11.0.0"
+  },
+  "files": [
+    "index.mjs",
+    "index.cjs",
+    "index.d.ts",
+    "cli.mjs",
+    "README.md",
+    "pkg-web/**",
+    "pkg-node/**",
+    "pkg-bundler/**"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -17,6 +17,7 @@ impl XmlProcessor {
         }
     }
 
+    #[allow(dead_code)]
     fn extract_text_from_events(reader: &mut Reader<&[u8]>) -> String {
         let mut text_content = String::new();
         let mut buf = Vec::new();

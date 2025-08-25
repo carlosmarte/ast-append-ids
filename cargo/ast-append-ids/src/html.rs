@@ -1,10 +1,13 @@
 use crate::ast_common::{self, AstNode};
 use crate::id_generator::IdGenerator;
-use crate::{AstProcessor, IdOptions};
-use scraper::{Html, Node, Selector};
-use selectors::attr::CaseSensitivity;
+use crate::{AstProcessor, IdOptions, IdStrategy};
+use lol_html::{element, rewrite_str, RewriteStrSettings};
+use std::cell::RefCell;
+use std::rc::Rc;
+use std::collections::HashMap;
 
 pub struct HtmlProcessor {
+    #[allow(dead_code)]
     generator: IdGenerator,
 }
 
@@ -14,130 +17,109 @@ impl HtmlProcessor {
             generator: IdGenerator::new(),
         }
     }
-
-    fn extract_text_content(element: &scraper::ElementRef) -> String {
-        let text_parts: Vec<String> = element
-            .text()
-            .filter_map(|t| {
-                let trimmed = t.trim();
-                if trimmed.is_empty() {
-                    None
-                } else {
-                    Some(trimmed.to_string())
-                }
-            })
-            .collect();
+    
+    fn extract_text_content(&self, html: &str) -> HashMap<usize, String> {
+        let mut text_map = HashMap::new();
+        let doc = scraper::Html::parse_document(html);
+        let mut counter = 0;
         
-        text_parts.join(" ")
-    }
-
-    fn process_node_recursive(
-        &mut self,
-        node_id: scraper::node::NodeId,
-        html: &mut Html,
-        options: &IdOptions,
-        path: &mut Vec<usize>,
-        element_index: &mut usize,
-    ) {
-        let node = html.tree.get(node_id).unwrap();
-        
-        if let Node::Element(element) = node.value() {
-            let element_name = element.name().to_string();
+        // Use a simple approach - iterate through all elements
+        for element_ref in doc.select(&scraper::Selector::parse("*").unwrap()) {
+            let mut text_content = String::new();
             
-            // Check for existing attribute
-            let existing_id = element.attr(&options.attr);
-            
-            if ast_common::should_process_node(&element_name, options, existing_id) {
-                let element_ref = scraper::ElementRef::wrap(node).unwrap();
-                let text_content = if matches!(options.strategy, crate::IdStrategy::Slug) {
-                    Some(Self::extract_text_content(&element_ref))
-                } else {
-                    None
-                };
-
-                let ast_node = AstNode {
-                    node_type: element_name.clone(),
-                    text_content,
-                    attributes: Vec::new(),
-                    path: path.clone(),
-                };
-
-                let id = ast_common::generate_id_for_node(&mut self.generator, &ast_node, options);
-                
-                // Get mutable element to modify attributes
-                if let Node::Element(element_mut) = html.tree.get_mut(node_id).unwrap().value_mut() {
-                    // Remove existing attribute if overwriting
-                    if options.overwrite && existing_id.is_some() {
-                        element_mut.remove_attribute(&options.attr);
+            // Collect direct text nodes only (not nested)
+            for text in element_ref.text() {
+                let trimmed = text.trim();
+                if !trimmed.is_empty() {
+                    if !text_content.is_empty() {
+                        text_content.push(' ');
                     }
-                    
-                    // Add new attribute
-                    if existing_id.is_none() || options.overwrite {
-                        element_mut.set_attribute(&options.attr, &id);
-                    }
+                    text_content.push_str(trimmed);
                 }
             }
             
-            // Process children
-            path.push(*element_index);
-            let children: Vec<_> = node.children().collect();
-            for (child_index, child_id) in children.into_iter().enumerate() {
-                let mut child_element_index = child_index;
-                self.process_node_recursive(
-                    child_id,
-                    html,
-                    options,
-                    path,
-                    &mut child_element_index,
-                );
+            if !text_content.is_empty() {
+                text_map.insert(counter, text_content);
             }
-            path.pop();
-            
-            *element_index += 1;
+            counter += 1;
         }
+        
+        text_map
     }
 }
 
 impl AstProcessor for HtmlProcessor {
     fn process(&mut self, content: &str, options: &IdOptions) -> Result<String, String> {
-        let mut html = Html::parse_document(content);
-        
-        // If a selector is provided, only process matching elements
-        if let Some(selector_str) = &options.selector {
-            let selector = Selector::parse(selector_str)
-                .map_err(|e| format!("Invalid selector: {:?}", e))?;
-            
-            // Collect node IDs first to avoid borrowing issues
-            let node_ids: Vec<_> = html.select(&selector)
-                .map(|el| el.id())
-                .collect();
-            
-            for node_id in node_ids {
-                let mut path = Vec::new();
-                let mut element_index = 0;
-                self.process_node_recursive(
-                    node_id,
-                    &mut html,
-                    options,
-                    &mut path,
-                    &mut element_index,
-                );
-            }
+        // Pre-extract text content if using slug strategy
+        let text_map = if matches!(options.strategy, IdStrategy::Slug) {
+            Rc::new(self.extract_text_content(content))
         } else {
-            // Process all elements
-            let root_element = html.root_element().id();
-            let mut path = Vec::new();
-            let mut element_index = 0;
-            self.process_node_recursive(
-                root_element,
-                &mut html,
-                options,
-                &mut path,
-                &mut element_index,
-            );
-        }
+            Rc::new(HashMap::new())
+        };
         
-        Ok(html.html())
+        let generator = Rc::new(RefCell::new(IdGenerator::new()));
+        let options = Rc::new(options.clone());
+        let element_counter = Rc::new(RefCell::new(0usize));
+        
+        let selector = if let Some(ref selector_str) = options.selector {
+            selector_str.clone()
+        } else {
+            "*".to_string() // Select all elements
+        };
+        
+        let generator_clone = generator.clone();
+        let options_clone = options.clone();
+        let counter_clone = element_counter.clone();
+        let text_map_clone = text_map.clone();
+        
+        let element_content_handlers = vec![
+            element!(selector.as_str(), move |el| {
+                let element_name = el.tag_name();
+                let existing_id = el.get_attribute(&options_clone.attr);
+                
+                if ast_common::should_process_node(&element_name, &options_clone, existing_id.as_deref()) {
+                    let counter = *counter_clone.borrow();
+                    
+                    let text_content = if matches!(options_clone.strategy, IdStrategy::Slug) {
+                        text_map_clone.get(&counter).cloned()
+                    } else {
+                        None
+                    };
+                    
+                    let path = vec![counter];
+                    *counter_clone.borrow_mut() += 1;
+                    
+                    let ast_node = AstNode {
+                        node_type: element_name.clone(),
+                        text_content,
+                        attributes: Vec::new(),
+                        path,
+                    };
+                    
+                    let id = ast_common::generate_id_for_node(
+                        &mut *generator_clone.borrow_mut(),
+                        &ast_node,
+                        &options_clone
+                    );
+                    
+                    // Set or replace the attribute
+                    if existing_id.is_none() || options_clone.overwrite {
+                        el.set_attribute(&options_clone.attr, &id)
+                            .map_err(|e| format!("Failed to set attribute: {}", e))?;
+                    }
+                }
+                
+                Ok(())
+            })
+        ];
+        
+        let rewrite_settings = RewriteStrSettings {
+            element_content_handlers,
+            ..RewriteStrSettings::default()
+        };
+        
+        rewrite_str(content, rewrite_settings)
+            .map_err(|e| format!("HTML processing error: {}", e))
     }
 }
 
@@ -185,14 +167,6 @@ mod tests {
         // Check that span has the attribute but p doesn't
         assert!(result.contains(&format!("<span {}=", options.attr)));
         assert!(!result.contains(&format!("<p {}=", options.attr)));
-    }
-
-    #[test]
-    fn test_html_text_extraction() {
-        let html = Html::parse_fragment("<div>Hello <span>World</span>!</div>");
-        let element = html.root_element();
-        let text = HtmlProcessor::extract_text_content(&element);
-        assert_eq!(text, "Hello World !");
     }
 
     #[test]

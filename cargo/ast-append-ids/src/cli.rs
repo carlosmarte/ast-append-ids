@@ -313,15 +313,15 @@ fn process_single_file(
     let processed = match detected_type {
         FileType::Jsx => {
             let mut processor = JsxProcessor::new();
-            processor.process(&content, options)?
+            processor.process(&content, options).map_err(anyhow::Error::msg)?
         }
         FileType::Xml => {
             let mut processor = XmlProcessor::new();
-            processor.process(&content, options)?
+            processor.process(&content, options).map_err(anyhow::Error::msg)?
         }
         FileType::Html => {
             let mut processor = HtmlProcessor::new();
-            processor.process(&content, options)?
+            processor.process(&content, options).map_err(anyhow::Error::msg)?
         }
         FileType::Auto => unreachable!(),
     };

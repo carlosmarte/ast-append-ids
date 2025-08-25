@@ -8,7 +8,6 @@ pub mod ast_common;
 pub mod wasm;
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IdOptions {
@@ -47,8 +46,6 @@ pub trait AstProcessor {
     fn process(&mut self, content: &str, options: &IdOptions) -> Result<String, String>;
 }
 
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen::prelude::*;
 
 #[cfg(target_arch = "wasm32")]
 #[global_allocator]

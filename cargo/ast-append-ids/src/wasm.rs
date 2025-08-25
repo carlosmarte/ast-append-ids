@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 use serde_wasm_bindgen::{from_value, to_value};
-use crate::{AstProcessor, IdOptions, IdStrategy};
+use crate::{AstProcessor, IdOptions};
 use crate::jsx::JsxProcessor;
 use crate::xml::XmlProcessor;
 use crate::html::HtmlProcessor;

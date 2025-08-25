@@ -1,0 +1,11 @@
+# WASM build outputs (copied from cargo build)
+pkg-web/
+pkg-node/
+pkg-bundler/
+
+# Node modules
+node_modules/
+
+# Build artifacts
+*.log
+.DS_Store
